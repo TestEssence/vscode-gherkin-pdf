@@ -2,6 +2,7 @@
 .vscode-test
 .vscode
 .art
+out
 node_modules
 work/**
 *.vsix
