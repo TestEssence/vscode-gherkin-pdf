@@ -1,0 +1,10 @@
+.history
+.vscode-test
+.vscode
+.art
+node_modules
+work/**
+*.vsix
+*.bat
+.eslintrc.json
+dist

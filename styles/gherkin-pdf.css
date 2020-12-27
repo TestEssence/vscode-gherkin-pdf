@@ -1,0 +1,41 @@
+/*
+ * Feature PDF CSS
+ */
+
+
+.page {
+	page-break-after: always;
+}
+pre {
+	padding: .5rem;
+	margin: auto;
+	page-break-inside: auto;
+	background-color: white;
+	white-space: pre-wrap;       /* css-3 */
+}
+table {
+	border: 1px solid rgb(70, 54, 54);
+	page-break-inside: auto;
+	border-spacing:0px;
+	margin: auto;
+	width: 100%;       
+}
+  /* ==========================================================================
+      markup for markdown-pdf component (code highlight)
+      ========================================================================== */
+    
+	  .hljs-keyword {
+		font-weight: italic;
+	}
+	.hljs-variable {
+		font-weight: bold;
+	}
+ 
+	.hljs {
+	 display: block;
+	 overflow-x: auto;
+	 padding: 0.5em;
+	 color: rgb(70, 54, 54);
+	 background: white;
+   }
+	
