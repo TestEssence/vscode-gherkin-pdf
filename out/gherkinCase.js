@@ -65,7 +65,7 @@ class GherkinCase {
         formattedTable += this.getMdDividerRow(this.getColumnsNumber(tableRows[0])) + '\r\n';
         for (var i = 1; i < tableRows.length; i++)
             formattedTable += tableRows[i] + '\r\n';
-        return (formattedTable + '```gherkin\r\n').replace(/\</, '&lt;').replace(/\>/, '&gt;');
+        return (formattedTable + '```gherkin\r\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
     }
     getMdDividerRow(columnsNumber) {
         var row = '|';

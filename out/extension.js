@@ -1,3 +1,7 @@
+/*
+extension code was
+https://github.com/yzane/vscode-markdown-pdf
+*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var vscode = require('vscode');
