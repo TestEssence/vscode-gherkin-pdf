@@ -5,7 +5,7 @@ export class GherkinCase {
   private tablesNumber: number = 0;
   private md: string = "";
 
-  private regexpScenarioTitle = /^\s+((Scenario:|Scenario Outline:)(.*?))$/gim;
+  private regexpScenarioTitle = /^((Rule:|Scenario:|Scenario Outline:)(.*?))$/gim;
   private linebreakPlaceholder = "<LINEBREAK>";
 
   constructor(featureCode: string, mode: any) {
@@ -21,6 +21,8 @@ export class GherkinCase {
 
   private convertToMarkdown() {
     var text = this.featureCode;
+    //removing all thr leading spaces
+    text = text.replace(/^\s+(.*?)$/gm, "$1");
     var scenarioCounter = 1;
     var match;
     do {
@@ -46,15 +48,20 @@ export class GherkinCase {
     this.scenariosNumber = scenarioCounter - 1;
     text = "```gherkin\r\n" + text + "\r\n```";
     //highlight Feature as header
-    text = text.replace(/^\s*(Feature:.*?)$/gm, "```\r\n# $1\r\n```gherkin");
+    text = text.replace(/^(Feature:.*?)$/gm, "\r\n```\r\n# $1\r\n```gherkin");
     text = text.replace(
       /^\s*(Background:.*?)$/gm,
-      "```\r\n## $1\r\n```gherkin"
+      "\r\n```\r\n## $1\r\n```gherkin"
     );
-    text = text.replace(/^\s*(Examples:.*?)$/gm, "```\r\n### $1\r\n```gherkin");
+    text = text.replace(
+      /^\s*(Examples:.*?)$/gm,
+      "\r\n```\r\n### $1\r\n```gherkin"
+    );
     text = this.formatTables(text);
     //remove emtry gherkin blocks
-    text = text.replace(/^\s*```gherkin\s*```/gim, "");
+    text = text.replace(/^```gherkin\s*\r\n```/gim, "");
+    // remove empty lines
+    text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gim, "");
     return text;
   }
 
@@ -82,7 +89,7 @@ export class GherkinCase {
   private formatTable(tableText: string) {
     var tableRows = tableText.split(this.linebreakPlaceholder);
     if (tableRows.length == 0) return ""; //table format seems to be broken...
-    var formattedTable = "```\r\n" + tableRows[0] + "\r\n";
+    var formattedTable = "\r\n```\r\n" + tableRows[0] + "\r\n";
 
     formattedTable +=
       this.getMdDividerRow(this.getColumnsNumber(tableRows[0])) + "\r\n";

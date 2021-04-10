@@ -300,10 +300,10 @@ function convertMarkdownToHtml({
 
     // toc
     // https://github.com/leff/markdown-it-named-headers
-    var options = {
-      slugify: Slug,
-    };
-    md.use(require("markdown-it-named-headers"), options);
+    // var options = {
+    //   slugify: Slug,
+    // };
+    // md.use(require("markdown-it-named-headers"), options);
 
     // markdown-it-container
     // https://github.com/markdown-it/markdown-it-container
