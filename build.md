@@ -4,7 +4,7 @@
 - Run `npm install -g vsce` in terminal to install "Visual Studio Code Extensions", a command-line tool for packaging, publishing and managing VS Code extensions
 
 Usage#
-You can use vsce to easily package and publish your extensions:
+You can use vsce to package and publish your extensions:
 
 ```
 $ cd myExtension
