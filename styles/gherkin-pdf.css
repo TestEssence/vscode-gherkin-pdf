@@ -2,40 +2,94 @@
  * Feature PDF CSS
  */
 
-
 .page {
-	page-break-after: always;
+  page-break-after: always;
 }
+body.wordWrap pre,
 pre {
-	padding: .5rem;
-	margin: auto;
-	page-break-inside: auto;
-	background-color: white;
-	white-space: pre-wrap;       /* css-3 */
+  padding: 0rem;
+  margin: 0 0 0 0;
+  page-break-inside: auto;
+  background-color: white;
+  white-space: pre-line; /* css-3 */
 }
+table > tbody > tr > td,
+table > thead > tr > th {
+  border: 0.1px solid rgb(70, 54, 54);
+}
+
 table {
-	border: 1px solid rgb(70, 54, 54);
-	page-break-inside: auto;
-	border-spacing:0px;
-	margin: auto;
-	width: 100%;       
+  border: 0.1px solid rgb(70, 54, 54);
+  page-break-inside: auto;
+  border-spacing: 0px;
+  margin-left: 32px;
+  font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New",
+    monospace, "Droid Sans Fallback";
+  padding-top: 0px;
+  padding-right: 16px;
+  padding-bottom: 0px;
+  padding-left: 16px;
 }
-  /* ==========================================================================
+h1,
+h2 {
+  margin-block-start: 0.83em;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+h3 {
+  font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New",
+    monospace, "Droid Sans Fallback";
+  margin-block-start: 0em;
+  margin-block-end: 0.05em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-left: 32px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+  padding-top: 0px;
+  padding-right: 16px;
+  padding-bottom: 0px;
+  padding-left: 16px;
+  border-radius: 3px;
+  overflow: auto;
+  margin: 0.25rem 0.25rem 0.15rem 0.25rem;
+}
+
+.hljs,
+.code {
+  margin: 0 0 0 0;
+  display: block;
+  overflow-x: auto;
+  padding-top: 0px;
+  padding-right: 16px;
+  padding-bottom: 0px;
+  padding-left: 16px;
+  color: rgb(70, 54, 54);
+  background: white;
+}
+
+/* ==========================================================================
       markup for markdown-pdf component (code highlight)
       ========================================================================== */
-    
-	  .hljs-keyword {
-		font-weight: italic;
-	}
-	.hljs-variable {
-		font-weight: bold;
-	}
- 
-	.hljs {
-	 display: block;
-	 overflow-x: auto;
-	 padding: 0.5em;
-	 color: rgb(70, 54, 54);
-	 background: white;
-   }
-	
+
+.hljs-keyword {
+  font-weight: italic;
+}
+.hljs-variable {
+  font-weight: bold;
+}
+
+.hljs,
+.code {
+  display: block;
+  overflow-x: auto;
+  padding-top: 0px;
+  padding-right: 16px;
+  padding-bottom: 0px;
+  padding-left: 16px;
+  color: rgb(70, 54, 54);
+  background: white;
+}
