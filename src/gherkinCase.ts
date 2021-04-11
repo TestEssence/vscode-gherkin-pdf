@@ -5,7 +5,7 @@ export class GherkinCase {
   private tablesNumber: number = 0;
   private md: string = "";
 
-  private regexpScenarioTitle = /^((Rule:|Scenario:|Scenario Outline:)(.*?))$/gim;
+  private regexpScenarioTitle = /^\s*((Rule:|Scenario:|Scenario Outline:)(.*?))$/gim;
   private linebreakPlaceholder = "<LINEBREAK>";
 
   constructor(featureCode: string, mode: any) {
@@ -21,7 +21,7 @@ export class GherkinCase {
 
   private convertToMarkdown() {
     var text = this.featureCode;
-    //removing all thr leading spaces
+    //removing all the leading spaces
     text = text.replace(/^\s+(.*?)$/gm, "$1");
     var scenarioCounter = 1;
     var match;
@@ -58,10 +58,12 @@ export class GherkinCase {
       "\r\n```\r\n### $1\r\n```gherkin"
     );
     text = this.formatTables(text);
-    //remove emtry gherkin blocks
-    text = text.replace(/^```gherkin\s*\r\n```/gim, "");
     // remove empty lines
     text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gim, "");
+    // indent And and But
+    text = text.replace(/^\s*(And|But)(.*?)$/gm, "\t$1$2");
+    //remove emtry gherkin blocks
+    text = text.replace(/^```gherkin\s*\r\n```/gim, "");
     return text;
   }
 

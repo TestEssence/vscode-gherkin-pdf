@@ -2,7 +2,7 @@
   "name": "gherkin-pdf",
   "displayName": "Gherkin PDF",
   "description": "Convert Gherkin to PDF",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "publisher": "TestEssence",
   "icon": "images/icon.png",
   "engines": {
@@ -37,11 +37,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.gherkin-pdf.settings",
-        "title": "Gherkin PDF: Export (settings.json)",
-        "group": "gherkin-pdf"
-      },
-      {
         "command": "extension.gherkin-pdf.pdf",
         "title": "Gherkin PDF: Export (pdf)",
         "group": "gherkin-pdf"
@@ -69,6 +64,11 @@
       {
         "command": "extension.gherkin-pdf.all",
         "title": "Gherkin PDF: Export (all: pdf, html, png, jpeg)",
+        "group": "gherkin-pdf"
+      },
+      {
+        "command": "extension.gherkin-pdf.settings",
+        "title": "Gherkin PDF: Open Settings (JSON)",
         "group": "gherkin-pdf"
       }
     ],

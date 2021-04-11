@@ -92,7 +92,13 @@ async function gherkinPdf(option_type: string) {
       vscode.window.showWarningMessage("It is not a gherkin (feature) mode!");
       return;
     }
-
+    if (option_type === "settings") {
+      vscode.commands.executeCommand(
+        "workbench.action.openSettings",
+        "@ext:testessence.gherkin-pdf"
+      );
+      return;
+    }
     var uri = editor.document.uri;
     var mdfilename = uri.fsPath;
     var ext = path.extname(mdfilename);
@@ -224,7 +230,7 @@ function convertMarkdownToHtml({
   try {
     try {
       var statusbarmessage = vscode.window.setStatusBarMessage(
-        "$(markdown) Converting (convertMarkdownToHtml)..."
+        "$(symbol-unit) Converting (convertMarkdownToHtml)..."
       );
       var hljs = require("highlight.js");
       var breaks = setBooleanValue(
@@ -274,7 +280,7 @@ function convertMarkdownToHtml({
       }
       // console.log("converted href: " + href);
       token.attrs[token.attrIndex("src")][1] = href;
-      // // pass token to default renderer.
+      // pass token to default renderer.
       return defaultRender(tokens, idx, options, env, self);
     };
 
@@ -465,7 +471,7 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
         if (type == "md") {
           exportHtml(data, exportFilename);
           vscode.window.setStatusBarMessage(
-            "$(markdown) " + exportFilename,
+            "$(symbol-unit) " + exportFilename,
             StatusbarMessageTimeout
           );
           return;
@@ -474,7 +480,7 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
         if (type == "html") {
           exportHtml(data, exportFilename);
           vscode.window.setStatusBarMessage(
-            "$(markdown) " + exportFilename,
+            "$(symbol-unit) " + exportFilename,
             StatusbarMessageTimeout
           );
           return;
@@ -659,7 +665,7 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
         }
 
         vscode.window.setStatusBarMessage(
-          "$(markdown) " + exportFilename,
+          "$(symbol-unit) " + exportFilename,
           StatusbarMessageTimeout
         );
       } catch (error) {
@@ -1016,7 +1022,7 @@ function downloadChromium(
       INSTALL_CHECK = true;
       statusbarmessage.dispose();
       vscode.window.setStatusBarMessage(
-        "$(markdown) Chromium installation succeeded!",
+        "$(symbol-unit) Chromium installation succeeded!",
         StatusbarMessageTimeout
       );
       vscode.window.showInformationMessage(
@@ -1029,7 +1035,7 @@ function downloadChromium(
   function onError(error: any) {
     statusbarmessage.dispose();
     vscode.window.setStatusBarMessage(
-      "$(markdown) ERROR: Failed to download Chromium!",
+      "$(symbol-unit) ERROR: Failed to download Chromium!",
       StatusbarMessageTimeout
     );
     showErrorMessage(
@@ -1040,9 +1046,9 @@ function downloadChromium(
   }
 
   function onProgress(downloadedBytes: number, totalBytes: number) {
-    var progress = ((downloadedBytes / totalBytes) * 100).toString;
+    var progress = ((downloadedBytes / totalBytes) * 100).toString();
     vscode.window.setStatusBarMessage(
-      "$(markdown) Installing Chromium " + progress + "%",
+      "$(symbol-unit) Installing Chromium " + progress + "%",
       StatusbarMessageTimeout
     );
   }
@@ -1052,7 +1058,7 @@ function downloadChromium(
       "[Gherkin PDF] Installing Chromium..."
     );
     var statusbarmessage = vscode.window.setStatusBarMessage(
-      "$(markdown) Installing Chromium..."
+      "$(symbol-unit) Installing Chromium..."
     );
 
     // proxy setting

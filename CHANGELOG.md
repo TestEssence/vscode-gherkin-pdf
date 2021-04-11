@@ -1,7 +1,8 @@
 # Change Log
 
-## 0.1.0 (2021/4/11)
+## 0.1.2 (2021/4/11)
 
+- fixed settings context menu
 - updated styles
 
 ## 0.0.2 (2021/4/10)
