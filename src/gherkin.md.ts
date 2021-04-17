@@ -1,11 +1,14 @@
-export class GherkinCase {
+export class GherkinMarkdown {
   private shouldCountScenario: boolean = false;
   private featureCode: string;
   private scenariosNumber: number = 0;
   private tablesNumber: number = 0;
   private md: string = "";
+  private featureAbstract: string = "";
+  private shouldExtractTag: boolean = true;
 
   private regexpScenarioTitle = /^\s*((Rule:|Scenario:|Scenario Outline:)(.*?))$/gim;
+
   private linebreakPlaceholder = "<LINEBREAK>";
 
   constructor(featureCode: string, mode: any) {
@@ -21,8 +24,10 @@ export class GherkinCase {
 
   private convertToMarkdown() {
     var text = this.featureCode;
+
     //removing all the leading spaces
-    text = text.replace(/^\s+(.*?)$/gm, "$1");
+    text = text.replace(/^[^\S\r\n]+(.*?)$/gm, "$1");
+    text = this.extractFeatureAbstract(text);
     var scenarioCounter = 1;
     var match;
     do {
@@ -39,34 +44,55 @@ export class GherkinCase {
           scenarioType +
           scenarioCounterText +
           scenarioName +
-          " \r\n```Gherkin\r\n";
+          " \r\n```gherkin\r\n";
         scenarioCounter++;
         text = text.replace(scenarioHeader, newScenarioHeader);
         //console.log(match[1]);
       }
     } while (match);
     this.scenariosNumber = scenarioCounter - 1;
-    text = "```gherkin\r\n" + text + "\r\n```";
-    //highlight Feature as header
-    text = text.replace(/^(Feature:.*?)$/gm, "\r\n```\r\n# $1\r\n```gherkin");
+    text = "```gherkin\r\n" + text + "```";
+
     text = text.replace(
       /^\s*(Background:.*?)$/gm,
       "\r\n```\r\n## $1\r\n```gherkin"
     );
-    text = text.replace(
-      /^\s*(Examples:.*?)$/gm,
-      "\r\n```\r\n### $1\r\n```gherkin"
-    );
+    text = text.replace(/^\s*(Examples:.*?)$/gm, "```\r\n### $1\r\n```gherkin");
     text = this.formatTables(text);
     // remove empty lines
-    text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gim, "");
+    // text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gim, "");
     // indent And and But
     text = text.replace(/^\s*(And|But)(.*?)$/gm, "\t$1$2");
+    if (this.shouldExtractTag) text = this.extractTags(text);
     //remove emtry gherkin blocks
     text = text.replace(/^```gherkin\s*\r\n```/gim, "");
+    text = text.replace(/(^```gherkin\r\n)\r\n/gim, "$1");
+    text = text.replace(/\r\n(\r\n```)/gim, "$1");
+    //restore featur eabstract
+    text = this.insertFeatureAbstract(text);
     return text;
   }
-
+  private extractFeatureAbstract(text) {
+    var regexpFeatureDscription = /^\s*(Feature:.*?$)(.*?)(?=^\s*(Background|Scenario|Rule|Given|When|#|@|"""))/gms;
+    var match = regexpFeatureDscription.exec(text);
+    if (match) {
+      this.featureAbstract = match[2];
+    }
+    return text.replace(
+      regexpFeatureDscription,
+      "\r\n```\r\n# $1{{FEATURE_DESCRIPTION}}\r\n```gherkin\r\n"
+    );
+  }
+  private extractTags(text: string) {
+    return text.replace(
+      /^(@.*?)$/gim,
+      "```\r\n<span class='gherkin_tag'>$1</span>\r\n```gherkin\r\n"
+    );
+  }
+  //highlight Feature as header and leave feature description as is
+  private insertFeatureAbstract(text: string) {
+    return text.replace("{{FEATURE_DESCRIPTION}}", this.featureAbstract);
+  }
   private formatTables(text: string) {
     var featureText = text.replace(
       /\|\s*$\s*\|/gim,

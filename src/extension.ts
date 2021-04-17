@@ -6,7 +6,7 @@ var fs = require("fs");
 var url = require("url");
 var os = require("os");
 
-import { GherkinCase } from "./gherkinCase";
+import { GherkinMarkdown } from "./gherkin.md";
 
 var INSTALL_CHECK = false;
 
@@ -142,7 +142,7 @@ async function gherkinPdf(option_type: string) {
         if (types_format.indexOf(type) >= 0) {
           filename = mdfilename.replace(ext, "." + type);
           var text = editor.document.getText();
-          var gherkin = new GherkinCase(text, null);
+          var gherkin = new GherkinMarkdown(text, null);
           var md = gherkin.getMarkdown();
           var content = convertMarkdownToHtml({
             filename: mdfilename,
@@ -306,10 +306,10 @@ function convertMarkdownToHtml({
 
     // toc
     // https://github.com/leff/markdown-it-named-headers
-    // var options = {
-    //   slugify: Slug,
-    // };
-    // md.use(require("markdown-it-named-headers"), options);
+    var options = {
+      slugify: Slug,
+    };
+    md.use(require("markdown-it-named-headers"), options);
 
     // markdown-it-container
     // https://github.com/markdown-it/markdown-it-container

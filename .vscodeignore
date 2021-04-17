@@ -8,3 +8,8 @@ work/**
 *.bat
 .eslintrc.json
 sample/**
+build.md
+tsconfig.json
+src/**
+out/test/**
+*.txt
