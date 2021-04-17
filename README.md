@@ -1,5 +1,7 @@
 # Gherkin PDF
 
+[![Version](https://vsmarketplacebadge.apphb.com/version/testessence.gherkin-pdf.svg)](https://marketplace.visualstudio.com/items?itemName=testessence.gherkin-pdf)
+
 Gherkin converter extension for Visual Studio Code. This extension converts Gherkin (.feature) files to markdown, pdf, html, png or jpeg files.
 
 ## Features
