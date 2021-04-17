@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.1.3 (2021/4/17)
+
+- excluded Feature description from gherkin block to allow rich formatting
+- added a space after Scenario heading
+- added tag formatting
+- added tables indentation
+
 ## 0.1.2 (2021/4/11)
 
 - fixed settings context menu
