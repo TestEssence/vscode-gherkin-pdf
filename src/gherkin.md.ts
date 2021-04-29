@@ -7,7 +7,7 @@ export class GherkinMarkdown {
   private featureAbstract: string = "";
   private shouldExtractTag: boolean = true;
 
-  private regexpScenarioTitle = /^\s*((Rule:|Scenario:|Scenario Outline:)(.*?))$/gim;
+  private regexpScenarioTitle = /(^\s*(Rule:|Scenario:|Scenario Outline:)(.*?)$)/gim;
 
   private linebreakPlaceholder = "<LINEBREAK>";
 
