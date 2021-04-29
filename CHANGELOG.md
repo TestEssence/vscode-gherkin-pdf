@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.4 (2021/4/29)
+
+-fixed [issue #5](https://github.com/TestEssence/vscode-gherkin-pdf/issues/5)
+
 ## 0.1.3 (2021/4/17)
 
 - excluded Feature description from gherkin block to allow rich formatting
