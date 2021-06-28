@@ -61,9 +61,8 @@ function activate(context: { subscriptions: any[] }) {
     context.subscriptions.push(command);
   });
 
-  var isConvertOnSave = vscode.workspace.getConfiguration("gherkin-pdf")[
-    "convertOnSave"
-  ];
+  var isConvertOnSave =
+    vscode.workspace.getConfiguration("gherkin-pdf")["convertOnSave"];
   if (isConvertOnSave) {
     var disposable_onsave = vscode.workspace.onDidSaveTextDocument(function () {
       gherkinPdfOnSave();
@@ -142,7 +141,14 @@ async function gherkinPdf(option_type: string) {
         if (types_format.indexOf(type) >= 0) {
           filename = mdfilename.replace(ext, "." + type);
           var text = editor.document.getText();
-          var gherkin = new GherkinMarkdown(text, null);
+          var gherkin = new GherkinMarkdown(
+            text,
+            null,
+            vscode.workspace.getConfiguration("gherkin-pdf", uri)[
+              "scenarioFooterTemplate"
+            ] ||
+              "<table width = 90% style='margin-left:8px; margin-top:8px; margin-bottom:10px'><tr><th width='25%'>Result</th> <th>Notes</th></tr><tr><td>&nbsp;</td><td></td></tr><tr><td colspan=2 style='font-size: smaller; padding 0 0 0 0; color: rgb(85, 85, 85);'>{{SCENARIO_NAME}}</td></tr></table><br>"
+          );
           var md = gherkin.getMarkdown();
           var content = convertMarkdownToHtml({
             filename: mdfilename,
@@ -454,9 +460,8 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
     return;
   }
 
-  var StatusbarMessageTimeout = vscode.workspace.getConfiguration(
-    "gherkin-pdf"
-  )["StatusbarMessageTimeout"];
+  var StatusbarMessageTimeout =
+    vscode.workspace.getConfiguration("gherkin-pdf")["StatusbarMessageTimeout"];
   vscode.window.setStatusBarMessage("");
   var exportFilename = getOutputDir(filename, uri);
 
@@ -636,18 +641,20 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
                 width: clip_width_option,
                 height: clip_height_option,
               },
-              omitBackground: vscode.workspace.getConfiguration("gherkin-pdf")[
-                "omitBackground"
-              ],
+              omitBackground:
+                vscode.workspace.getConfiguration("gherkin-pdf")[
+                  "omitBackground"
+                ],
             };
           } else {
             options = {
               path: exportFilename,
               quality: quality_option,
               fullPage: true,
-              omitBackground: vscode.workspace.getConfiguration("gherkin-pdf")[
-                "omitBackground"
-              ],
+              omitBackground:
+                vscode.workspace.getConfiguration("gherkin-pdf")[
+                  "omitBackground"
+                ],
             };
           }
           await page.screenshot(options);
@@ -743,9 +750,10 @@ function getOutputDir(filename: any, resource: { fsPath: any }) {
     }
 
     // Use a workspace relative path if there is a workspace and gherkin-pdf.outputDirectoryRootPath = workspace
-    var outputDirectoryRelativePathFile = vscode.workspace.getConfiguration(
-      "gherkin-pdf"
-    )["outputDirectoryRelativePathFile"];
+    var outputDirectoryRelativePathFile =
+      vscode.workspace.getConfiguration("gherkin-pdf")[
+        "outputDirectoryRelativePathFile"
+      ];
     let root = vscode.workspace.getWorkspaceFolder(resource);
     if (outputDirectoryRelativePathFile === false && root) {
       outputDir = path.join(root.uri.fsPath, outputDirectory);
@@ -841,9 +849,8 @@ function readStyles(uri: any) {
     var filename = "";
     var i: number;
 
-    includeDefaultStyles = vscode.workspace.getConfiguration("gherkin-pdf")[
-      "includeDefaultStyles"
-    ];
+    includeDefaultStyles =
+      vscode.workspace.getConfiguration("gherkin-pdf")["includeDefaultStyles"];
 
     // 1. read the style of the vscode.
     if (includeDefaultStyles) {
@@ -867,9 +874,8 @@ function readStyles(uri: any) {
     // 3. read the style of the highlight.js.
     var highlightStyle =
       vscode.workspace.getConfiguration("gherkin-pdf")["highlightStyle"] || "";
-    var ishighlight = vscode.workspace.getConfiguration("gherkin-pdf")[
-      "highlight"
-    ];
+    var ishighlight =
+      vscode.workspace.getConfiguration("gherkin-pdf")["highlight"];
     if (ishighlight) {
       if (highlightStyle) {
         var css =
@@ -943,9 +949,10 @@ function fixHref(resource: { fsPath: any }, href: string) {
     }
 
     // Use a workspace relative path if there is a workspace and gherkin-pdf.stylesRelativePathFile is false
-    var stylesRelativePathFile = vscode.workspace.getConfiguration(
-      "gherkin-pdf"
-    )["stylesRelativePathFile"];
+    var stylesRelativePathFile =
+      vscode.workspace.getConfiguration("gherkin-pdf")[
+        "stylesRelativePathFile"
+      ];
     let root = vscode.workspace.getWorkspaceFolder(resource);
     if (stylesRelativePathFile === false && root) {
       return vscode.Uri.file(path.join(root.uri.fsPath, href)).toString();
@@ -988,9 +995,8 @@ function checkPuppeteerBinary() {
  * https://github.com/GoogleChrome/puppeteer/blob/master/install.js
  */
 function installChromium() {
-  var StatusbarMessageTimeout = vscode.workspace.getConfiguration(
-    "gherkin-pdf"
-  )["StatusbarMessageTimeout"];
+  var StatusbarMessageTimeout =
+    vscode.workspace.getConfiguration("gherkin-pdf")["StatusbarMessageTimeout"];
   const puppeteer = require("puppeteer-core");
   const browserFetcher = puppeteer.createBrowserFetcher();
   const revision = require(path.join(
@@ -1046,7 +1052,7 @@ function downloadChromium(
   }
 
   function onProgress(downloadedBytes: number, totalBytes: number) {
-    var progress = ((downloadedBytes / totalBytes) * 100).toString();
+    var progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
     vscode.window.setStatusBarMessage(
       "$(symbol-unit) Installing Chromium " + progress + "%",
       StatusbarMessageTimeout

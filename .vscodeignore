@@ -13,3 +13,4 @@ tsconfig.json
 src/**
 out/test/**
 *.txt
+temp/**
