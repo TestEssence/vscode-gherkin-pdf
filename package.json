@@ -2,7 +2,7 @@
   "name": "gherkin-pdf",
   "displayName": "Gherkin PDF",
   "description": "Converts Gherkin (.feature) files into markdown, html, and PDF format",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publisher": "TestEssence",
   "icon": "images/icon.png",
   "engines": {
@@ -332,20 +332,26 @@
         },
         "gherkin-pdf.headerTemplate": {
           "type": "string",
-          "default": "<div style=\"font-size: 9px; margin-left: 1cm;\"> <span class='title'></span></div> <div style=\"font-size: 9px; margin-left: auto; margin-right: 1cm; \"> <span class='date'></span></div>",
+          "default": "<div style=\"font-size: 9px; margin-left: 1cm;\"> </div> <div style=\"font-size: 9px; margin-left: auto; margin-right: 1cm; \"> <span class='date'></span></div>",
           "description": "pdf only. HTML template for the print header.",
           "scope": "resource"
         },
         "gherkin-pdf.footerTemplate": {
           "type": "string",
-          "default": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span> / <span class='totalPages'></span></div>",
+          "default": "<style>   .footer {     width: 5.5in;     margin-left: 0.5in;     font-size: 7px;     padding-top: 0px;     display: flex;     flex-direction: row;     align-items: flex-start;     justify-content: space-between;     color: #dddddd;     border-top: 1px solid #dddddd;   }   .copyright {     display: flex;     flex-direction: column;     align-items: flex-end;   } </style> <div class=\"footer\">   <div><span class='title'></span></div> <strong>Page:</strong>&nbsp;<span class=\"pageNumber\"></span       >&nbsp;of&nbsp;<span class=\"totalPages\"></span>     </div>   </div> </div>",
           "description": "pdf only. HTML template for the print footer.",
           "scope": "resource"
         },
         "gherkin-pdf.scenarioFooterTemplate": {
           "type": "string",
-          "default": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span> / <span class='totalPages'></span></div>",
-          "description": "HTML template to be appended below each scenario.",
+          "default": "<table width = 90% style='margin-left:8px; margin-top:8px; margin-bottom:10px'><tr><th width='25%'>Result</th> <th>Notes</th></tr><tr><td>&nbsp;</td><td></td></tr><tr><td colspan=2 style='font-size: smaller; padding 0 0 0 0; color: rgb(85, 85, 85);'>{{SCENARIO_NAME}}</td></tr></table><br>",
+          "description": "A template to be appended below each scenario. {{SCENARIO_NAME}} wildcard used to insert scenario name",
+          "scope": "resource"
+        },
+        "gherkin-pdf.featureSummaryTemplate": {
+          "type": "string",
+          "default": "<table   width=\"100%\"   style=\"margin-left: 8px; margin-top: 8px; margin-bottom: 10px\" >   <tr>     <th width=\"35%\">Software Under Test:</th>     <td>&nbsp;</td>   </tr>   <tr>     <th>Test Execution Date:</th>     <td>&nbsp;</td>   </tr>   <tr>     <th>Executed By:</th>     <td>&nbsp;</td>   </tr>   <tr>     <th>Overall Result:</th>     <td>&nbsp;</td>   </tr> </table> <br />",
+          "description": "A template to be inserted before the Feature abstract.",
           "scope": "resource"
         },
         "gherkin-pdf.printBackground": {

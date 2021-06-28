@@ -10,7 +10,8 @@ Generats a Markdown/HTML/PDF document from Gherkin with the following features:
 
 - Syntax highlighting
 - Table formatting
-- Document template customization
+- Document template (Header and Footer) customization
+- Feature Summary (Feature Summary Template) and Scenario Footer (Scenario Footer Template) customization
 
 > To enable Gherkin highlighting in Visual Code editor install a corresponding extension like [Cucumber (Gherkin) Syntax and Snippets](https://github.com/euclidity/vscode-cucumber)
 

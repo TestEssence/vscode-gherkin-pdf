@@ -13,29 +13,7 @@ pre {
   background-color: white;
   white-space: pre-line; /* css-3 */
 }
-table > tbody > tr > td,
-table > thead > tr > th {
-  border: 0.1px solid rgb(70, 54, 54);
-  padding-top: 4px;
-  padding-right: 10px;
-  padding-bottom: 8px;
-  padding-left: 10px;
-  page-break-inside: avoid;
-}
 
-table {
-  border: 0.1px solid rgb(70, 54, 54);
-  page-break-inside: avoid;
-  border-spacing: 0px;
-  margin-top: 8px;
-  margin-left: 48px;
-  font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New",
-    monospace, "Droid Sans Fallback";
-  padding-top: 4px;
-  padding-right: 4px;
-  padding-bottom: 8px;
-  padding-left: 4px;
-}
 h1,
 h2 {
   margin-block-start: 0.3em;

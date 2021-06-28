@@ -143,11 +143,12 @@ async function gherkinPdf(option_type: string) {
           var text = editor.document.getText();
           var gherkin = new GherkinMarkdown(
             text,
-            null,
             vscode.workspace.getConfiguration("gherkin-pdf", uri)[
               "scenarioFooterTemplate"
-            ] ||
-              "<table width = 90% style='margin-left:8px; margin-top:8px; margin-bottom:10px'><tr><th width='25%'>Result</th> <th>Notes</th></tr><tr><td>&nbsp;</td><td></td></tr><tr><td colspan=2 style='font-size: smaller; padding 0 0 0 0; color: rgb(85, 85, 85);'>{{SCENARIO_NAME}}</td></tr></table><br>"
+            ] || "",
+            vscode.workspace.getConfiguration("gherkin-pdf", uri)[
+              "featureSummaryTemplate"
+            ] || ""
           );
           var md = gherkin.getMarkdown();
           var content = convertMarkdownToHtml({
