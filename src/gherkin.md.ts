@@ -1,20 +1,24 @@
 export class GherkinMarkdown {
   private shouldCountScenario: boolean = false;
   private featureCode: string;
+  private scenarioFooter: string;
   private scenariosNumber: number = 0;
   private tablesNumber: number = 0;
   private md: string = "";
   private featureAbstract: string = "";
-  private shouldExtractTag: boolean = true;
+  private ScenarioNameWildcard = "{{SCENARIO_NAME}}";
 
-  private regexpScenarioTitle = /(^\s*(Rule:|Scenario:|Scenario Outline:)(.*?)$)/gim;
+  private regexpScenarioTitle =
+    //   /(^\s*(Rule:|Background:|Scenario:|Scenario Outline:)(.*?)$)/gim;
+    /(^((\s*\@.*?)*)\s*(Rule:|Scenario:|Scenario Outline:)(.*?)$)/gim;
 
   private linebreakPlaceholder = "<LINEBREAK>";
 
-  constructor(featureCode: string, mode: any) {
+  constructor(featureCode: string, mode: any, scenarioFoter: string) {
     this.featureCode = featureCode;
     this.scenariosNumber = 0;
     this.tablesNumber = 0;
+    this.scenarioFooter = scenarioFoter;
     this.md = this.convertToMarkdown();
   }
 
@@ -30,65 +34,106 @@ export class GherkinMarkdown {
     text = this.extractFeatureAbstract(text);
     var scenarioCounter = 1;
     var match;
-    do {
-      match = this.regexpScenarioTitle.exec(text);
-      if (match) {
-        var scenarioType = match[2];
-        var scenarioName = match[3];
-        var scenarioHeader = match[1];
-        var scenarioCounterText = this.shouldCountScenario
-          ? " " + scenarioCounter + ":"
-          : "";
-        var newScenarioHeader =
-          "\r\n```\r\n## " +
-          scenarioType +
-          scenarioCounterText +
-          scenarioName +
-          " \r\n```gherkin\r\n";
-        scenarioCounter++;
-        text = text.replace(scenarioHeader, newScenarioHeader);
-        //console.log(match[1]);
+    var previousScenarioName = "";
+    var match;
+    while ((match = this.regexpScenarioTitle.exec(text))) {
+      var scenarioType = match[4];
+      var scenarioName = match[5];
+      var scenarioTags = match[2];
+      var scenarioHeader = match[1];
+      var scenarioCounterText = this.shouldCountScenario
+        ? " " + scenarioCounter + ":"
+        : "";
+      var newScenarioHeader =
+        this.formatTags(scenarioTags) +
+        "\r\n## " +
+        scenarioType +
+        scenarioCounterText +
+        scenarioName;
+      if (scenarioCounter > 1 && this.scenarioFooter) {
+        var footer = this.scenarioFooter.replace(
+          this.ScenarioNameWildcard,
+          previousScenarioName
+        );
+        newScenarioHeader = "\r\n" + footer + "\r\n" + newScenarioHeader;
       }
-    } while (match);
+
+      text = text.replace(
+        scenarioHeader,
+        this.isolateFromGherkin(newScenarioHeader)
+      );
+      scenarioCounter++;
+      previousScenarioName = scenarioName;
+      //console.log(match[1]);
+    }
     this.scenariosNumber = scenarioCounter - 1;
     text = "```gherkin\r\n" + text + "```";
 
     text = text.replace(
       /^\s*(Background:.*?)$/gm,
-      "\r\n```\r\n## $1\r\n```gherkin"
+      this.isolateFromGherkin("## $1")
     );
-    text = text.replace(/^\s*(Examples:.*?)$/gm, "```\r\n### $1\r\n```gherkin");
+    text = text.replace(
+      /^\s*(Examples:.*?)$/gm,
+      this.isolateFromGherkin("### $1")
+    );
     text = this.formatTables(text);
-    // remove empty lines
-    // text = text.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gim, "");
     // indent And and But
     text = text.replace(/^\s*(And|But)(.*?)$/gm, "\t$1$2");
-    if (this.shouldExtractTag) text = this.extractTags(text);
-    //remove emtry gherkin blocks
-    text = text.replace(/^```gherkin\s*\r\n```/gim, "");
-    text = text.replace(/(^```gherkin\r\n)\r\n/gim, "$1");
-    text = text.replace(/\r\n(\r\n```)/gim, "$1");
-    //restore featur eabstract
+    //add a footer to the last scenario
+    if (this.scenarioFooter) {
+      text +=
+        "\r\n" +
+        this.scenarioFooter.replace(
+          this.ScenarioNameWildcard,
+          previousScenarioName
+        );
+    }
+    text = this.removeEmptyGherkinBlocks(text);
+    //restore feature abstract
     text = this.insertFeatureAbstract(text);
+
     return text;
   }
-  private extractFeatureAbstract(text) {
-    var regexpFeatureDscription = /^\s*(Feature:.*?$)(.*?)(?=^\s*(Background|Scenario|Rule|Given|When|#|@|"""))/gms;
+
+  private removeEmptyGherkinBlocks(text: string) {
+    text = text.replace(/^```gherkin\s*\r\n```/gim, "");
+    text = text.replace(/(^```gherkin\r\n)\r\n/gim, "$1");
+    text = text.replace(/\r\n(\r\n\r\n```)/gim, "$1");
+    return text;
+  }
+
+  private isolateFromGherkin(text: string) {
+    return "\r\n```\r\n" + text + " \r\n```gherkin\r\n";
+  }
+
+  private extractFeatureAbstract(text: string) {
+    var regexpFeatureDscription =
+      /^((\s*\@.*?)*)\s*(Feature:.*?$)(.*?)(?=^\s*(Background|Scenario|Rule|Given|When|#|@|"""))/gms;
     var match = regexpFeatureDscription.exec(text);
+    var tags = "";
     if (match) {
-      this.featureAbstract = match[2];
+      this.featureAbstract = match[4];
+      tags = this.formatTags(match[1]);
     }
     return text.replace(
       regexpFeatureDscription,
-      "\r\n```\r\n# $1{{FEATURE_DESCRIPTION}}\r\n```gherkin\r\n"
+      this.isolateFromGherkin(tags + "# $3{{FEATURE_DESCRIPTION}}")
     );
   }
-  private extractTags(text: string) {
-    return text.replace(
-      /^(@.*?)$/gim,
-      "```\r\n<span class='gherkin_tag'>$1</span>\r\n```gherkin\r\n"
-    );
+
+  private formatTags(tagText: string) {
+    var tags: string[] = [];
+    var reg = new RegExp(/(@[\w-]+)/gim);
+    var match;
+    while ((match = reg.exec(tagText))) {
+      tags.push(match[1]);
+    }
+    return tagText
+      ? "<span class='gherkin_tag'>" + tags.join(", ") + "</span>\r\n"
+      : "";
   }
+
   //highlight Feature as header and leave feature description as is
   private insertFeatureAbstract(text: string) {
     return text.replace("{{FEATURE_DESCRIPTION}}", this.featureAbstract);

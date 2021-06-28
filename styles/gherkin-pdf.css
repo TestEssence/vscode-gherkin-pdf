@@ -9,26 +9,32 @@ body.wordWrap pre,
 pre {
   padding: 0rem;
   margin: 0 0 0 0;
-  page-break-inside: auto;
+  page-break-inside: avoid;
   background-color: white;
   white-space: pre-line; /* css-3 */
 }
 table > tbody > tr > td,
 table > thead > tr > th {
   border: 0.1px solid rgb(70, 54, 54);
+  padding-top: 4px;
+  padding-right: 10px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+  page-break-inside: avoid;
 }
 
 table {
   border: 0.1px solid rgb(70, 54, 54);
-  page-break-inside: auto;
+  page-break-inside: avoid;
   border-spacing: 0px;
+  margin-top: 8px;
   margin-left: 48px;
   font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New",
     monospace, "Droid Sans Fallback";
   padding-top: 4px;
-  padding-right: 16px;
+  padding-right: 4px;
   padding-bottom: 8px;
-  padding-left: 16px;
+  padding-left: 4px;
 }
 h1,
 h2 {
@@ -81,18 +87,14 @@ pre.hljs code > div {
 .hljs-variable {
   font-weight: bold;
 }
-p {
-  margin-bottom: 0;
-}
+
 .gherkin_tag {
   color: rgb(187, 23, 132);
-  font-weight: italic;
-  margin-block-start: 0em;
+  font-style: italic;
+  margin-block-start: 1em;
   margin-block-end: 0em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
   margin-bottom: 0;
-  padding: 0 0 0 0;
+  margin-top: 1em;
 }
 .hljs,
 .code {
@@ -104,4 +106,13 @@ p {
   padding-left: 16px;
   color: rgb(70, 54, 54);
   background: white;
+}
+
+p {
+  display: block;
+  margin-block-start: 0.5em;
+  margin-block-end: 0.2em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  margin-bottom: 0;
 }

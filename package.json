@@ -2,7 +2,7 @@
   "name": "gherkin-pdf",
   "displayName": "Gherkin PDF",
   "description": "Converts Gherkin (.feature) files into markdown, html, and PDF format",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "TestEssence",
   "icon": "images/icon.png",
   "engines": {
@@ -342,6 +342,12 @@
           "description": "pdf only. HTML template for the print footer.",
           "scope": "resource"
         },
+        "gherkin-pdf.scenarioFooterTemplate": {
+          "type": "string",
+          "default": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span> / <span class='totalPages'></span></div>",
+          "description": "HTML template to be appended below each scenario.",
+          "scope": "resource"
+        },
         "gherkin-pdf.printBackground": {
           "type": "boolean",
           "default": true,
@@ -506,6 +512,7 @@
     "removeNPMAbsolutePaths": "^2.0.0",
     "style-loader": "^2.0.0",
     "ts-node": "^9.1.1",
+    "tsc": "^2.0.3",
     "vscode-test": "^1.5.2",
     "webpack": "^5.33.2",
     "webpack-cli": "^4.6.0"
@@ -531,7 +538,7 @@
     "mustache": "^4.2.0",
     "puppeteer-core": "^2.1.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.3",
+    "typescript": "^4.3.4",
     "utf-8-validate": "^5.0.4"
   }
 }
