@@ -2,6 +2,7 @@ export class GherkinMarkdown {
   private shouldCountScenario: boolean = false;
   private featureCode: string;
   private scenarioFooter: string;
+  private featureSummary: string;
   private scenariosNumber: number = 0;
   private tablesNumber: number = 0;
   private md: string = "";
@@ -14,8 +15,13 @@ export class GherkinMarkdown {
 
   private linebreakPlaceholder = "<LINEBREAK>";
 
-  constructor(featureCode: string, mode: any, scenarioFoter: string) {
+  constructor(
+    featureCode: string,
+    scenarioFoter: string,
+    featureSummary: string
+  ) {
     this.featureCode = featureCode;
+    this.featureSummary = featureSummary;
     this.scenariosNumber = 0;
     this.tablesNumber = 0;
     this.scenarioFooter = scenarioFoter;
@@ -136,7 +142,11 @@ export class GherkinMarkdown {
 
   //highlight Feature as header and leave feature description as is
   private insertFeatureAbstract(text: string) {
-    return text.replace("{{FEATURE_DESCRIPTION}}", this.featureAbstract);
+    var featureAbstract = this.featureAbstract;
+    if (this.featureSummary) {
+      featureAbstract = "\r\n" + this.featureSummary + "\r\n" + featureAbstract;
+    }
+    return text.replace("{{FEATURE_DESCRIPTION}}", featureAbstract);
   }
   private formatTables(text: string) {
     var featureText = text.replace(
