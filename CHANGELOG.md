@@ -2,7 +2,7 @@
 
 ## 0.1.6 (2021/6/28)
 
--fixed [issue #3](https://github.com/TestEssence/vscode-gherkin-pdf/issues/3): Added scenarioFooterTemplate
+-fixed [issue #2](https://github.com/TestEssence/vscode-gherkin-pdf/issues/2): Added featureSummaryTemplate
 
 ## 0.1.5 (2021/6/27)
 
