@@ -43,8 +43,3 @@ Type export and select one of the options listed below
 
 MIT
 
-## Special thanks
-
-- [Markdown PDF](https://github.com/yzane/vscode-markdown-pdf): This extension is created based on _Markdown PDF_ by yzane
-- [GoogleChrome/puppeteer](https://github.com/GoogleChrome/puppeteer)
-- [markdown-it/markdown-it](https://github.com/markdown-it/markdown-it)
