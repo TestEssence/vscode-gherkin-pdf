@@ -11,7 +11,7 @@
   "categories": [
     "Other"
   ],
-  "license": "SEE LICENSE IN LICENSE.txt",
+  "license": "LICENSE",
   "keywords": [
     "markdown",
     "pdf",
@@ -544,7 +544,7 @@
     "mustache": "^4.2.0",
     "puppeteer-core": "^2.1.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.3.4",
+    "typescript": "^4.6.3",
     "utf-8-validate": "^5.0.4"
   }
 }

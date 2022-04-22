@@ -6,65 +6,65 @@ var fs = require("fs");
 var url = require("url");
 var os = require("os");
 
-import { GherkinMarkdown } from "./gherkin.md";
+import {GherkinMarkdown} from "./gherkin.md";
 
 var INSTALL_CHECK = false;
 
 function activate(context: { subscriptions: any[] }) {
   init();
 
-  var commands = [
+  const commands = [
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.settings",
-      async function () {
-        await gherkinPdf("settings");
-      }
+        "extension.gherkin-pdf.settings",
+        async function () {
+          await gherkinPdf("settings");
+        }
     ),
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.pdf",
-      async function () {
-        await gherkinPdf("pdf");
-      }
+        "extension.gherkin-pdf.pdf",
+        async function () {
+          await gherkinPdf("pdf");
+        }
     ),
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.html",
-      async function () {
-        await gherkinPdf("html");
-      }
+        "extension.gherkin-pdf.html",
+        async function () {
+          await gherkinPdf("html");
+        }
     ),
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.png",
-      async function () {
-        await gherkinPdf("png");
-      }
+        "extension.gherkin-pdf.png",
+        async function () {
+          await gherkinPdf("png");
+        }
     ),
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.jpeg",
-      async function () {
-        await gherkinPdf("jpeg");
-      }
+        "extension.gherkin-pdf.jpeg",
+        async function () {
+          await gherkinPdf("jpeg");
+        }
     ),
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.md",
-      async function () {
-        await gherkinPdf("md");
-      }
+        "extension.gherkin-pdf.md",
+        async function () {
+          await gherkinPdf("md");
+        }
     ),
     vscode.commands.registerCommand(
-      "extension.gherkin-pdf.all",
-      async function () {
-        await gherkinPdf("all");
-      }
+        "extension.gherkin-pdf.all",
+        async function () {
+          await gherkinPdf("all");
+        }
     ),
   ];
   commands.forEach(function (command) {
     context.subscriptions.push(command);
   });
 
-  var isConvertOnSave =
+  let isConvertOnSave =
     vscode.workspace.getConfiguration("gherkin-pdf")["convertOnSave"];
   if (isConvertOnSave) {
-    var disposable_onsave = vscode.workspace.onDidSaveTextDocument(function () {
+    let disposable_onsave = vscode.workspace.onDidSaveTextDocument(function () {
       gherkinPdfOnSave();
     });
     context.subscriptions.push(disposable_onsave);
@@ -79,14 +79,14 @@ exports.deactivate = deactivate;
 async function gherkinPdf(option_type: string) {
   try {
     // check active window
-    var editor = vscode.window.activeTextEditor;
+    let editor = vscode.window.activeTextEditor;
     if (!editor) {
       vscode.window.showWarningMessage("No active Editor!");
       return;
     }
 
     // check feature mode
-    var mode = editor.document.languageId;
+    let mode = editor.document.languageId;
     if (mode != "feature") {
       vscode.window.showWarningMessage("It is not a gherkin (feature) mode!");
       return;
@@ -98,9 +98,9 @@ async function gherkinPdf(option_type: string) {
       );
       return;
     }
-    var uri = editor.document.uri;
-    var mdfilename = uri.fsPath;
-    var ext = path.extname(mdfilename);
+    let uri = editor.document.uri;
+    let mdfilename = uri.fsPath;
+    let ext = path.extname(mdfilename);
     if (!isExistsPath(mdfilename)) {
       if (editor.document.isUntitled) {
         vscode.window.showWarningMessage("Please save the file!");
@@ -110,13 +110,13 @@ async function gherkinPdf(option_type: string) {
       return;
     }
 
-    var types_format = ["html", "pdf", "png", "jpeg", "md"];
-    var filename = "";
+    let types_format = ["html", "pdf", "png", "jpeg", "md"];
+    let filename = "";
     let types: string[] = [];
     if (types_format.indexOf(option_type) >= 0) {
       types[0] = option_type;
     } else if (option_type === "settings") {
-      var types_tmp =
+      let types_tmp =
         vscode.workspace.getConfiguration("gherkin-pdf")["type"] || "pdf";
       if (types_tmp && !Array.isArray(types_tmp)) {
         types[0] = types_tmp;
@@ -136,12 +136,12 @@ async function gherkinPdf(option_type: string) {
 
     // convert and export markdown to pdf, html, png, jpeg
     if (types && Array.isArray(types) && types.length > 0) {
-      for (var i = 0; i < types.length; i++) {
-        var type = types[i];
+      for (let i = 0; i < types.length; i++) {
+        let type = types[i];
         if (types_format.indexOf(type) >= 0) {
           filename = mdfilename.replace(ext, "." + type);
-          var text = editor.document.getText();
-          var gherkin = new GherkinMarkdown(
+          let text = editor.document.getText();
+          let gherkin = new GherkinMarkdown(
             text,
             vscode.workspace.getConfiguration("gherkin-pdf", uri)[
               "scenarioFooterTemplate"
@@ -151,12 +151,12 @@ async function gherkinPdf(option_type: string) {
             ] || ""
           );
           var md = gherkin.getMarkdown();
-          var content = convertMarkdownToHtml({
+          let content = convertMarkdownToHtml({
             filename: mdfilename,
             type,
             text: md,
           });
-          var html = makeHtml(content, uri);
+          let html = makeHtml(content, uri);
           console.log("html size " + html.length);
           await exportFile(type == "md" ? md : html, filename, type, uri);
         } else {
@@ -181,8 +181,8 @@ async function gherkinPdf(option_type: string) {
 
 function gherkinPdfOnSave() {
   try {
-    var editor = vscode.window.activeTextEditor;
-    var mode = editor.document.languageId;
+    let editor = vscode.window.activeTextEditor;
+    let mode = editor.document.languageId;
     if (mode != "feature") {
       return;
     }
@@ -196,18 +196,18 @@ function gherkinPdfOnSave() {
 
 function isgherkinPdfOnSaveExclude() {
   try {
-    var editor = vscode.window.activeTextEditor;
-    var filename = path.basename(editor.document.fileName);
-    var patterns =
+    let editor = vscode.window.activeTextEditor;
+    let filename = path.basename(editor.document.fileName);
+    let patterns =
       vscode.workspace.getConfiguration("gherkin-pdf")[
         "convertOnSaveExclude"
       ] || "";
-    var pattern: string | RegExp;
-    var i: number;
+    let pattern: string | RegExp;
+    let i: number;
     if (patterns && Array.isArray(patterns) && patterns.length > 0) {
       for (i = 0; i < patterns.length; i++) {
         pattern = patterns[i];
-        var re = new RegExp(pattern);
+        let re = new RegExp(pattern);
         if (re.test(filename)) {
           return true;
         }
@@ -231,18 +231,18 @@ function convertMarkdownToHtml({
   type: string;
   text: string;
 }) {
-  var grayMatter = require("gray-matter");
-  var matterParts = grayMatter(text);
+  let grayMatter = require("gray-matter");
+  let matterParts = grayMatter(text);
 
   try {
     try {
-      var statusbarmessage = vscode.window.setStatusBarMessage(
+      var statusbarmessage= vscode.window.setStatusBarMessage(
         "$(symbol-unit) Converting (convertMarkdownToHtml)..."
       );
-      var hljs = require("highlight.js");
-      var breaks = setBooleanValue(
-        matterParts.data.breaks,
-        vscode.workspace.getConfiguration("gherkin-pdf")["breaks"]
+      const hljs = require("highlight.js");
+      const breaks = setBooleanValue(
+          matterParts.data.breaks,
+          vscode.workspace.getConfiguration("gherkin-pdf")["breaks"]
       );
       var md = require("markdown-it")({
         html: true,
@@ -268,8 +268,8 @@ function convertMarkdownToHtml({
     }
 
     // convert the img src of the markdown
-    var cheerio = require("cheerio");
-    var defaultRender = md.renderer.rules.image;
+    const cheerio = require("cheerio");
+    const defaultRender = md.renderer.rules.image;
     md.renderer.rules.image = function (
       tokens: { [x: string]: any },
       idx: string | number,
@@ -277,8 +277,8 @@ function convertMarkdownToHtml({
       env: any,
       self: any
     ) {
-      var token = tokens[idx];
-      var href = token.attrs[token.attrIndex("src")][1];
+      const token = tokens[idx];
+      let href = token.attrs[token.attrIndex("src")][1];
       // console.log("original href: " + href);
       if (type === "html") {
         href = decodeURIComponent(href).replace(/("|')/g, "");
@@ -297,11 +297,11 @@ function convertMarkdownToHtml({
         tokens: { [x: string]: { content: any } },
         idx: string | number
       ) {
-        var html = tokens[idx].content;
-        var $ = cheerio.load(html);
+        const html = tokens[idx].content;
+        const $ = cheerio.load(html);
         $("img").each(() => {
-          var src = $(this).attr("src");
-          var href = convertImgPath(src, filename);
+          const src = $(this).attr("src");
+          const href = convertImgPath(src, filename);
           $(this).attr("src", href);
         });
         return $.html();
@@ -313,7 +313,7 @@ function convertMarkdownToHtml({
 
     // toc
     // https://github.com/leff/markdown-it-named-headers
-    var options = {
+    let options = {
       slugify: Slug,
     };
     md.use(require("markdown-it-named-headers"), options);
@@ -340,22 +340,22 @@ function convertMarkdownToHtml({
 
     // PlantUML
     // https://github.com/gmunguia/markdown-it-plantuml
-    var plantumlOptions = {
+    const plantumlOptions = {
       openMarker:
-        matterParts.data.plantumlOpenMarker ||
-        vscode.workspace.getConfiguration("gherkin-pdf")[
-          "plantumlOpenMarker"
-        ] ||
-        "@startuml",
+          matterParts.data.plantumlOpenMarker ||
+          vscode.workspace.getConfiguration("gherkin-pdf")[
+              "plantumlOpenMarker"
+              ] ||
+          "@startuml",
       closeMarker:
-        matterParts.data.plantumlCloseMarker ||
-        vscode.workspace.getConfiguration("gherkin-pdf")[
-          "plantumlCloseMarker"
-        ] ||
-        "@enduml",
+          matterParts.data.plantumlCloseMarker ||
+          vscode.workspace.getConfiguration("gherkin-pdf")[
+              "plantumlCloseMarker"
+              ] ||
+          "@enduml",
       server:
-        vscode.workspace.getConfiguration("gherkin-pdf")["plantumlServer"] ||
-        "",
+          vscode.workspace.getConfiguration("gherkin-pdf")["plantumlServer"] ||
+          "",
     };
     md.use(require("markdown-it-plantuml"), plantumlOptions);
 
@@ -387,19 +387,18 @@ function convertMarkdownToHtml({
  */
 function Slug(string: string) {
   try {
-    var stg = encodeURI(
-      string
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-") // Replace whitespace with -
-        .replace(
-          /[\]\[\!\'\#\$\%\&\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`。，、；：？！…—·ˉ¨‘’“”々～‖∶＂＇｀｜〃〔〕〈〉《》「」『』．〖〗【】（）［］｛｝]/g,
-          ""
-        ) // Remove known punctuators
-        .replace(/^\-+/, "") // Remove leading -
-        .replace(/\-+$/, "") // Remove trailing -
+    return encodeURI(
+        string
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "-") // Replace whitespace with -
+            .replace(
+                /[\]\[\!\'\#\$\%\&\(\)\*\+\,\.\/\:\;\<\=\>\?\@\\\^\_\{\|\}\~\`。，、；：？！…—·ˉ¨‘’“”々～‖∶＂＇｀｜〃〔〕〈〉《》「」『』．〖〗【】（）［］｛｝]/g,
+                ""
+            ) // Remove known punctuators
+            .replace(/^\-+/, "") // Remove leading -
+            .replace(/\-+$/, "") // Remove trailing -
     );
-    return stg;
   } catch (error) {
     showErrorMessage("Slug()", error);
   }
@@ -411,22 +410,22 @@ function Slug(string: string) {
 function makeHtml(data: any, uri: { fsPath: any }) {
   try {
     // read styles
-    var style = "";
+    let style = "";
     style += readStyles(uri);
 
     // get title
-    var title = path.basename(uri.fsPath);
+    const title = path.basename(uri.fsPath);
 
     // read template
-    var filename = path.join(__dirname, "../template", "template.html");
+    const filename = path.join(__dirname, "../template", "template.html");
     require("puppeteer-core");
-    var template = readFile(filename);
+    const template = readFile(filename);
     //var template = require ('../template/template.html');
 
     // compile template
-    var mustache = require("mustache");
+    const mustache = require("mustache");
 
-    var view = {
+    const view = {
       title: title,
       style: style,
       content: data,
@@ -461,10 +460,10 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
     return;
   }
 
-  var StatusbarMessageTimeout =
-    vscode.workspace.getConfiguration("gherkin-pdf")["StatusbarMessageTimeout"];
+  const StatusbarMessageTimeout =
+      vscode.workspace.getConfiguration("gherkin-pdf")["StatusbarMessageTimeout"];
   vscode.window.setStatusBarMessage("");
-  var exportFilename = getOutputDir(filename, uri);
+  const exportFilename = getOutputDir(filename, uri);
 
   return vscode.window.withProgress(
     {
@@ -494,14 +493,14 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
 
         const puppeteer = require("puppeteer-core");
         // create temporary file
-        var f = path.parse(filename);
-        var tmpfilename = path.join(f.dir, f.name + "_tmp.html");
+        const f = path.parse(filename);
+        const tmpfilename = path.join(f.dir, f.name + "_tmp.html");
         exportHtml(data, tmpfilename);
-        var puppeteer_launch_options = {
+        const puppeteer_launch_options = {
           executablePath:
-            vscode.workspace.getConfiguration("gherkin-pdf")[
-              "executablePath"
-            ] || puppeteer.executablePath(),
+              vscode.workspace.getConfiguration("gherkin-pdf")[
+                  "executablePath"
+                  ] || puppeteer.executablePath(),
           args: [
             "--lang=" + vscode.env.language,
             "--no-sandbox",
@@ -520,19 +519,19 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
         if (type == "pdf") {
           // If width or height option is set, it overrides the format option.
           // In order to set the default value of page size to A4, we changed it from the specification of puppeteer.
-          var width_option =
-            vscode.workspace.getConfiguration("gherkin-pdf", uri)["width"] ||
-            "";
-          var height_option =
-            vscode.workspace.getConfiguration("gherkin-pdf", uri)["height"] ||
-            "";
-          var format_option = "";
+          const width_option =
+              vscode.workspace.getConfiguration("gherkin-pdf", uri)["width"] ||
+              "";
+          const height_option =
+              vscode.workspace.getConfiguration("gherkin-pdf", uri)["height"] ||
+              "";
+          let format_option = "";
           if (!width_option && !height_option) {
             format_option =
               vscode.workspace.getConfiguration("gherkin-pdf", uri)["format"] ||
               "A4";
           }
-          var landscape_option: boolean;
+          let landscape_option: boolean;
           if (
             vscode.workspace.getConfiguration("gherkin-pdf", uri)[
               "orientation"
@@ -542,56 +541,56 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
           } else {
             landscape_option = false;
           }
-          var pdf_options = {
+          const pdf_options = {
             path: exportFilename,
             scale: vscode.workspace.getConfiguration("gherkin-pdf", uri)[
-              "scale"
-            ],
+                "scale"
+                ],
             displayHeaderFooter: vscode.workspace.getConfiguration(
-              "gherkin-pdf",
-              uri
+                "gherkin-pdf",
+                uri
             )["displayHeaderFooter"],
             headerTemplate:
-              vscode.workspace.getConfiguration("gherkin-pdf", uri)[
-                "headerTemplate"
-              ] || "",
+                vscode.workspace.getConfiguration("gherkin-pdf", uri)[
+                    "headerTemplate"
+                    ] || "",
             footerTemplate:
-              vscode.workspace.getConfiguration("gherkin-pdf", uri)[
-                "footerTemplate"
-              ] || "",
+                vscode.workspace.getConfiguration("gherkin-pdf", uri)[
+                    "footerTemplate"
+                    ] || "",
             printBackground: vscode.workspace.getConfiguration(
-              "gherkin-pdf",
-              uri
+                "gherkin-pdf",
+                uri
             )["printBackground"],
             landscape: landscape_option,
             pageRanges:
-              vscode.workspace.getConfiguration("gherkin-pdf", uri)[
-                "pageRanges"
-              ] || "",
+                vscode.workspace.getConfiguration("gherkin-pdf", uri)[
+                    "pageRanges"
+                    ] || "",
             format: format_option,
             width:
-              vscode.workspace.getConfiguration("gherkin-pdf", uri)["width"] ||
-              "",
+                vscode.workspace.getConfiguration("gherkin-pdf", uri)["width"] ||
+                "",
             height:
-              vscode.workspace.getConfiguration("gherkin-pdf", uri)["height"] ||
-              "",
+                vscode.workspace.getConfiguration("gherkin-pdf", uri)["height"] ||
+                "",
             margin: {
               top:
-                vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
-                  "top"
-                ] || "",
+                  vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
+                      "top"
+                      ] || "",
               right:
-                vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
-                  "right"
-                ] || "",
+                  vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
+                      "right"
+                      ] || "",
               bottom:
-                vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
-                  "bottom"
-                ] || "",
+                  vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
+                      "bottom"
+                      ] || "",
               left:
-                vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
-                  "left"
-                ] || "",
+                  vscode.workspace.getConfiguration("gherkin-pdf", uri)["margin"][
+                      "left"
+                      ] || "",
             },
           };
           await page.pdf(pdf_options);
@@ -601,7 +600,7 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
         // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagescreenshotoptions
         if (type == "png" || type == "jpeg") {
           // Quality options do not apply to PNG images.
-          var quality_option: any;
+          let quality_option: any;
           if (type == "png") {
             quality_option = undefined;
           }
@@ -612,20 +611,20 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
           }
 
           // screenshot size
-          var clip_x_option =
-            vscode.workspace.getConfiguration("gherkin-pdf")["clip"]["x"] ||
-            null;
-          var clip_y_option =
-            vscode.workspace.getConfiguration("gherkin-pdf")["clip"]["y"] ||
-            null;
-          var clip_width_option =
-            vscode.workspace.getConfiguration("gherkin-pdf")["clip"]["width"] ||
-            null;
-          var clip_height_option =
-            vscode.workspace.getConfiguration("gherkin-pdf")["clip"][
-              "height"
-            ] || null;
-          var options;
+          const clip_x_option =
+              vscode.workspace.getConfiguration("gherkin-pdf")["clip"]["x"] ||
+              null;
+          const clip_y_option =
+              vscode.workspace.getConfiguration("gherkin-pdf")["clip"]["y"] ||
+              null;
+          const clip_width_option =
+              vscode.workspace.getConfiguration("gherkin-pdf")["clip"]["width"] ||
+              null;
+          const clip_height_option =
+              vscode.workspace.getConfiguration("gherkin-pdf")["clip"][
+                  "height"
+                  ] || null;
+          let options;
           if (
             clip_x_option !== null &&
             clip_y_option !== null &&
@@ -664,8 +663,8 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
         await browser.close();
 
         // delete temporary file
-        var debug =
-          vscode.workspace.getConfiguration("gherkin-pdf")["debug"] || false;
+        const debug =
+            vscode.workspace.getConfiguration("gherkin-pdf")["debug"] || false;
         if (!debug) {
           if (isExistsPath(tmpfilename)) {
             deleteFile(tmpfilename);
@@ -691,7 +690,10 @@ function isExistsPath(path: string | any[]) {
     fs.accessSync(path);
     return true;
   } catch (error) {
-    console.warn(error.message);
+    let message
+    if (error instanceof Error) message = error.message
+    else message = String(error)
+    console.warn(message);
     return false;
   }
 }
@@ -708,24 +710,27 @@ function isExistsDir(dirname: string | any[]) {
       return false;
     }
   } catch (error) {
-    console.warn(error.message);
+    let message
+    if (error instanceof Error) message = error.message
+    else message = String(error)
+    console.warn(message);
     return false;
   }
 }
 
 function deleteFile(path: any) {
-  var rimraf = require("rimraf");
+  const rimraf = require("rimraf");
   rimraf.sync(path);
 }
 
 function getOutputDir(filename: any, resource: { fsPath: any }) {
   try {
-    var outputDir: any;
+    let outputDir: any;
     if (resource === undefined) {
       return filename;
     }
-    var outputDirectory =
-      vscode.workspace.getConfiguration("gherkin-pdf")["outputDirectory"] || "";
+    const outputDirectory =
+        vscode.workspace.getConfiguration("gherkin-pdf")["outputDirectory"] || "";
     if (outputDirectory.length === 0) {
       return filename;
     }
@@ -751,10 +756,10 @@ function getOutputDir(filename: any, resource: { fsPath: any }) {
     }
 
     // Use a workspace relative path if there is a workspace and gherkin-pdf.outputDirectoryRootPath = workspace
-    var outputDirectoryRelativePathFile =
-      vscode.workspace.getConfiguration("gherkin-pdf")[
-        "outputDirectoryRelativePathFile"
-      ];
+    const outputDirectoryRelativePathFile =
+        vscode.workspace.getConfiguration("gherkin-pdf")[
+            "outputDirectoryRelativePathFile"
+            ];
     let root = vscode.workspace.getWorkspaceFolder(resource);
     if (outputDirectoryRelativePathFile === false && root) {
       outputDir = path.join(root.uri.fsPath, outputDirectory);
@@ -775,7 +780,7 @@ function mkdir(path: any) {
   if (isExistsDir(path)) {
     return;
   }
-  var mkdirp = require("mkdirp");
+  const mkdirp = require("mkdirp");
   return mkdirp.sync(path);
 }
 
@@ -784,7 +789,7 @@ function readFile(filename: string) {
     return "";
   }
   //if (!encode && encode !== null) {
-  var encode = "utf-8";
+  const encode = "utf-8";
   //}
   if (filename.indexOf("file://") === 0) {
     if (process.platform === "win32") {
@@ -802,9 +807,9 @@ function readFile(filename: string) {
 
 function convertImgPath(src: string, filename: any) {
   try {
-    var href = decodeURIComponent(src);
+    let href = decodeURIComponent(src);
     href = href.replace(/("|')/g, "").replace(/\\/g, "/").replace(/#/g, "%23");
-    var protocol = url.parse(href).protocol;
+    const protocol = url.parse(href).protocol;
     if (protocol === "file:" && href.indexOf("file:///") !== 0) {
       return href.replace(/^file:\/\//, "file:///");
     } else if (protocol === "file:") {
@@ -831,7 +836,7 @@ function convertImgPath(src: string, filename: any) {
 
 function makeCss(filename: string) {
   try {
-    var css = readFile(filename);
+    const css = readFile(filename);
     if (css) {
       return "\n<style>\n" + css + "\n</style>\n";
     } else {
@@ -844,11 +849,11 @@ function makeCss(filename: string) {
 
 function readStyles(uri: any) {
   try {
-    var includeDefaultStyles: any;
-    var style = "";
-    var styles = "";
-    var filename = "";
-    var i: number;
+    let includeDefaultStyles: any;
+    let style = "";
+    let styles = "";
+    let filename = "";
+    let i: number;
 
     includeDefaultStyles =
       vscode.workspace.getConfiguration("gherkin-pdf")["includeDefaultStyles"];
@@ -865,7 +870,7 @@ function readStyles(uri: any) {
       styles = vscode.workspace.getConfiguration("markdown")["styles"];
       if (styles && Array.isArray(styles) && styles.length > 0) {
         for (i = 0; i < styles.length; i++) {
-          var href = fixHref(uri, styles[i]);
+          let href = fixHref(uri, styles[i]);
           style +=
             '<link rel="stylesheet" href="' + href + '" type="text/css">';
         }
@@ -873,15 +878,15 @@ function readStyles(uri: any) {
     }
 
     // 3. read the style of the highlight.js.
-    var highlightStyle =
-      vscode.workspace.getConfiguration("gherkin-pdf")["highlightStyle"] || "";
-    var ishighlight =
-      vscode.workspace.getConfiguration("gherkin-pdf")["highlight"];
+    const highlightStyle =
+        vscode.workspace.getConfiguration("gherkin-pdf")["highlightStyle"] || "";
+    const ishighlight =
+        vscode.workspace.getConfiguration("gherkin-pdf")["highlight"];
     if (ishighlight) {
       if (highlightStyle) {
-        var css =
-          vscode.workspace.getConfiguration("gherkin-pdf")["highlightStyle"] ||
-          "github.css";
+        const css =
+            vscode.workspace.getConfiguration("gherkin-pdf")["highlightStyle"] ||
+            "github.css";
         filename = path.join(
           __dirname,
           "../node_modules",
@@ -909,7 +914,7 @@ function readStyles(uri: any) {
     styles = vscode.workspace.getConfiguration("gherkin-pdf")["styles"] || "";
     if (styles && Array.isArray(styles) && styles.length > 0) {
       for (i = 0; i < styles.length; i++) {
-        var href = fixHref(uri, styles[i]);
+        let href = fixHref(uri, styles[i]);
         style += '<link rel="stylesheet" href="' + href + '" type="text/css">';
       }
     }
@@ -950,10 +955,10 @@ function fixHref(resource: { fsPath: any }, href: string) {
     }
 
     // Use a workspace relative path if there is a workspace and gherkin-pdf.stylesRelativePathFile is false
-    var stylesRelativePathFile =
-      vscode.workspace.getConfiguration("gherkin-pdf")[
-        "stylesRelativePathFile"
-      ];
+    const stylesRelativePathFile =
+        vscode.workspace.getConfiguration("gherkin-pdf")[
+            "stylesRelativePathFile"
+            ];
     let root = vscode.workspace.getWorkspaceFolder(resource);
     if (stylesRelativePathFile === false && root) {
       return vscode.Uri.file(path.join(root.uri.fsPath, href)).toString();
@@ -971,8 +976,8 @@ function fixHref(resource: { fsPath: any }, href: string) {
 function checkPuppeteerBinary() {
   try {
     // settings.json
-    var executablePath =
-      vscode.workspace.getConfiguration("gherkin-pdf")["executablePath"] || "";
+    let executablePath =
+        vscode.workspace.getConfiguration("gherkin-pdf")["executablePath"] || "";
     if (isExistsPath(executablePath)) {
       INSTALL_CHECK = true;
       return true;
@@ -996,8 +1001,8 @@ function checkPuppeteerBinary() {
  * https://github.com/GoogleChrome/puppeteer/blob/master/install.js
  */
 function installChromium() {
-  var StatusbarMessageTimeout =
-    vscode.workspace.getConfiguration("gherkin-pdf")["StatusbarMessageTimeout"];
+  const StatusbarMessageTimeout =
+      vscode.workspace.getConfiguration("gherkin-pdf")["StatusbarMessageTimeout"];
   const puppeteer = require("puppeteer-core");
   const browserFetcher = puppeteer.createBrowserFetcher();
   const revision = require(path.join(
@@ -1053,7 +1058,7 @@ function downloadChromium(
   }
 
   function onProgress(downloadedBytes: number, totalBytes: number) {
-    var progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
+    const progress = ((downloadedBytes / totalBytes) * 100).toFixed(2);
     vscode.window.setStatusBarMessage(
       "$(symbol-unit) Installing Chromium " + progress + "%",
       StatusbarMessageTimeout
@@ -1064,7 +1069,7 @@ function downloadChromium(
     vscode.window.showInformationMessage(
       "[Gherkin PDF] Installing Chromium..."
     );
-    var statusbarmessage = vscode.window.setStatusBarMessage(
+    var statusbarmessage= vscode.window.setStatusBarMessage(
       "$(symbol-unit) Installing Chromium..."
     );
 
@@ -1082,17 +1087,20 @@ function downloadChromium(
   }
 }
 
-function showErrorMessage(msg: string, error: string) {
+function showErrorMessage(msg: string, error: any) {
+  let message
+  if (error instanceof Error) message = error.message
+  else message = String(error)
   vscode.window.showErrorMessage("ERROR: " + msg);
   console.log("ERROR: " + msg);
   if (error) {
-    vscode.window.showErrorMessage(error.toString());
-    console.log(error);
+    vscode.window.showErrorMessage(message);
+    console.log(message);
   }
 }
 
 function setProxy() {
-  var https_proxy = vscode.workspace.getConfiguration("http")["proxy"] || "";
+  const https_proxy = vscode.workspace.getConfiguration("http")["proxy"] || "";
   if (https_proxy) {
     process.env.HTTPS_PROXY = https_proxy;
     process.env.HTTP_PROXY = https_proxy;
