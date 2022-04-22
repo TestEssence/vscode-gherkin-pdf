@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.1.7 (2021/6/28)
+
+-fixed [issue #10](https://github.com/TestEssence/vscode-gherkin-pdf/issues/10): Fixed Catastrophic Backtracking in regex
 ## 0.1.6 (2021/6/28)
 
 -fixed [issue #2](https://github.com/TestEssence/vscode-gherkin-pdf/issues/2): Added featureSummaryTemplate

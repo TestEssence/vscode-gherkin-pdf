@@ -114,18 +114,29 @@ export class GherkinMarkdown {
   }
 
   private extractFeatureAbstract(text: string) {
-    var regexpFeatureDscription =
-      /^((\s*\@.*?)*)\s*(Feature:.*?$)(.*?)(?=^\s*(Background|Scenario|Rule|Given|When|#|@|"""))/gms;
-    var match = regexpFeatureDscription.exec(text);
-    var tags = "";
-    if (match) {
-      this.featureAbstract = match[4];
-      tags = this.formatTags(match[1]);
-    }
-    return text.replace(
-      regexpFeatureDscription,
-      this.isolateFromGherkin(tags + "# $3{{FEATURE_DESCRIPTION}}")
-    );
+      var result = text;
+      console.debug("// extractFeatureAbstract()");
+      var regexFeatureTags =  /^((\s*\@.*?)*)\s*?Feature:/gs;
+      var match = regexFeatureTags.exec(text);
+      var tags = "";
+      if (match) {
+          console.debug("// extractFeatureAbstract() Tags:"+match[1]);
+          tags = this.formatTags(match[1]);
+          //remove tags 
+          result = text.replace(regexFeatureTags, "Feature:");
+      }
+
+      var regexpFeatureDscription = /\s*?((Feature:.*?$)(.*?))(?=^\s*?(Background:|Scenario:|Rule|Given|When|#|@|"""))/gsim;
+      match = regexpFeatureDscription.exec(result);
+      if (match) {
+          console.debug("// featureAbstract match:"+match[1] );
+          this.featureAbstract = match[3] + "\n";
+          result = result.replace(regexpFeatureDscription, this.isolateFromGherkin(tags + "# $2 {{FEATURE_DESCRIPTION}}"));
+          console.debug("// extractFeatureAbstract() - Done.");
+      }else{
+          console.debug("Feature Prefix not found");    
+      }
+      return result;
   }
 
   private formatTags(tagText: string) {
@@ -144,7 +155,7 @@ export class GherkinMarkdown {
   private insertFeatureAbstract(text: string) {
     var featureAbstract = this.featureAbstract;
     if (this.featureSummary) {
-      featureAbstract = "\r\n" + this.featureSummary + "\r\n" + featureAbstract;
+      featureAbstract =  "\r\n" + featureAbstract + "\r\n" + this.featureSummary + "\r\n";
     }
     return text.replace("{{FEATURE_DESCRIPTION}}", featureAbstract);
   }
