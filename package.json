@@ -2,7 +2,7 @@
   "name": "gherkin-pdf",
   "displayName": "Gherkin PDF",
   "description": "Converts Gherkin (.feature) files into markdown, html, and PDF format",
-  "version": "0.1.7",
+  "version": "0.2.1",
   "publisher": "TestEssence",
   "icon": "images/icon.png",
   "engines": {
@@ -344,14 +344,14 @@
         },
         "gherkin-pdf.scenarioFooterTemplate": {
           "type": "string",
-          "default": "<table width = 90% style='margin-left:8px; margin-top:8px; margin-bottom:10px'><tr><th width='25%'>Result</th> <th>Notes</th></tr><tr><td>&nbsp;</td><td></td></tr><tr><td colspan=2 style='font-size: smaller; padding 0 0 0 0; color: rgb(85, 85, 85);'>{{SCENARIO_NAME}}</td></tr></table><br>",
+          "default": "&nbsp;",
           "description": "A template to be appended below each scenario. {{SCENARIO_NAME}} wildcard used to insert scenario name",
           "scope": "resource"
         },
         "gherkin-pdf.featureSummaryTemplate": {
           "type": "string",
-          "default": "<table   width=\"100%\"   style=\"margin-left: 8px; margin-top: 8px; margin-bottom: 10px\" >   <tr>     <th width=\"35%\">Software Under Test:</th>     <td>&nbsp;</td>   </tr>   <tr>     <th>Test Execution Date:</th>     <td>&nbsp;</td>   </tr>   <tr>     <th>Executed By:</th>     <td>&nbsp;</td>   </tr>   <tr>     <th>Overall Result:</th>     <td>&nbsp;</td>   </tr> </table> <br />",
-          "description": "A template to be inserted before the Feature abstract.",
+          "default": "",
+          "description": "A template to be inserted before the Feature description.",
           "scope": "resource"
         },
         "gherkin-pdf.printBackground": {
@@ -509,18 +509,22 @@
   },
   "devDependencies": {
     "@types/mocha": "^8.2.2",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
     "css-loader": "^5.2.2",
+    "eslint": "^8.56.0",
+    "eslint-config-google": "^0.14.0",
     "file-loader": "^6.2.0",
     "glob": "^7.1.6",
     "html-loader": "^2.1.2",
-    "mocha": "^8.3.2",
+    "mocha": "10.1.0",
     "nativescript-dev-webpack": "^1.5.1",
     "removeNPMAbsolutePaths": "^2.0.0",
     "style-loader": "^2.0.0",
     "ts-node": "^9.1.1",
     "tsc": "^2.0.3",
     "vscode-test": "^1.5.2",
-    "webpack": "^5.33.2",
+    "webpack": "5.76.0",
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
@@ -529,10 +533,10 @@
     "cheerio": "^0.22.0",
     "d3": "^6.7.0",
     "emoji-images": "^0.1.1",
-    "eslint": "^7.23.0",
+    "feature-to-md": "^1.0.8",
     "gray-matter": "^4.0.2",
     "highlight.js": "^10.7.2",
-    "markdown-it": "^12.0.6",
+    "markdown-it": "12.3.2",
     "markdown-it-checkbox": "^1.1.0",
     "markdown-it-container": "^3.0.0",
     "markdown-it-emoji": "^2.0.0",
@@ -544,7 +548,7 @@
     "mustache": "^4.2.0",
     "puppeteer-core": "^2.1.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.6.3",
+    "typescript": "^5.3.3",
     "utf-8-validate": "^5.0.4"
   }
 }
