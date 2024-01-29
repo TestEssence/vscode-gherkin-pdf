@@ -1,12 +1,13 @@
+
 "use strict";
 
-var vscode = require("vscode");
-var path = require("path");
-var fs = require("fs");
-var url = require("url");
-var os = require("os");
+import {GherkinMarkdown} from "feature-to-md/dist/lib/gherkin.md";
 
-import {GherkinMarkdown} from "./gherkin.md";
+const vscode = require("vscode");
+const path = require("path");
+const fs = require("fs");
+const url = require("url");
+const os = require("os");
 
 var INSTALL_CHECK = false;
 
@@ -136,8 +137,8 @@ async function gherkinPdf(option_type: string) {
 
     // convert and export markdown to pdf, html, png, jpeg
     if (types && Array.isArray(types) && types.length > 0) {
-      for (let i = 0; i < types.length; i++) {
-        let type = types[i];
+      for (const element of types) {
+        let type = element;
         if (types_format.indexOf(type) >= 0) {
           filename = mdfilename.replace(ext, "." + type);
           let text = editor.document.getText();
@@ -219,7 +220,7 @@ function isgherkinPdfOnSaveExclude() {
   }
 }
 
-/*
+/**
  * convert markdown to html (markdown-it)
  */
 function convertMarkdownToHtml({
@@ -236,7 +237,7 @@ function convertMarkdownToHtml({
 
   try {
     try {
-      var statusbarmessage= vscode.window.setStatusBarMessage(
+      var statusbarmessage = vscode.window.setStatusBarMessage(
         "$(symbol-unit) Converting (convertMarkdownToHtml)..."
       );
       const hljs = require("highlight.js");
@@ -253,7 +254,6 @@ function convertMarkdownToHtml({
               str = hljs.highlight(lang, str, true).value;
             } catch (error) {
               str = md.utils.escapeHtml(str);
-
               showErrorMessage("markdown-it:highlight", error);
             }
           } else {
@@ -279,13 +279,12 @@ function convertMarkdownToHtml({
     ) {
       const token = tokens[idx];
       let href = token.attrs[token.attrIndex("src")][1];
-      // console.log("original href: " + href);
       if (type === "html") {
         href = decodeURIComponent(href).replace(/("|')/g, "");
       } else {
         href = convertImgPath(href, filename);
       }
-      // console.log("converted href: " + href);
+      
       token.attrs[token.attrIndex("src")][1] = href;
       // pass token to default renderer.
       return defaultRender(tokens, idx, options, env, self);
@@ -420,7 +419,6 @@ function makeHtml(data: any, uri: { fsPath: any }) {
     const filename = path.join(__dirname, "../template", "template.html");
     require("puppeteer-core");
     const template = readFile(filename);
-    //var template = require ('../template/template.html');
 
     // compile template
     const mustache = require("mustache");
@@ -443,13 +441,12 @@ function exportHtml(data: any, filename: any) {
   fs.writeFile(filename, data, "utf-8", function (error: any) {
     if (error) {
       showErrorMessage("exportHtml()", error);
-      return;
     }
   });
 }
 
 /*
- * export a file into targetr format (md-html-pdf)
+ * export a file into target format (md-html-pdf)
  */
 function exportFile(data: any, filename: string, type: string, uri: any) {
   if (!INSTALL_CHECK) {
@@ -532,15 +529,9 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
               "A4";
           }
           let landscape_option: boolean;
-          if (
-            vscode.workspace.getConfiguration("gherkin-pdf", uri)[
+          landscape_option = vscode.workspace.getConfiguration("gherkin-pdf", uri)[
               "orientation"
-            ] == "landscape"
-          ) {
-            landscape_option = true;
-          } else {
-            landscape_option = false;
-          }
+              ] == "landscape";
           const pdf_options = {
             path: exportFilename,
             scale: vscode.workspace.getConfiguration("gherkin-pdf", uri)[
@@ -568,11 +559,11 @@ function exportFile(data: any, filename: string, type: string, uri: any) {
                     "pageRanges"
                     ] || "",
             format: format_option,
-            width:
-                vscode.workspace.getConfiguration("gherkin-pdf", uri)["width"] ||
-                "",
             height:
                 vscode.workspace.getConfiguration("gherkin-pdf", uri)["height"] ||
+                "",
+            width:
+                vscode.workspace.getConfiguration("gherkin-pdf", uri)["width"] ||
                 "",
             margin: {
               top:
@@ -690,12 +681,16 @@ function isExistsPath(path: string | any[]) {
     fs.accessSync(path);
     return true;
   } catch (error) {
-    let message
-    if (error instanceof Error) message = error.message
-    else message = String(error)
-    console.warn(message);
+    reportError(error);
     return false;
   }
+}
+
+function reportError(error: any) {
+  let message =
+  error instanceof Error?
+     error.message : String(error);
+  console.warn(message);
 }
 
 function isExistsDir(dirname: string | any[]) {
@@ -710,10 +705,7 @@ function isExistsDir(dirname: string | any[]) {
       return false;
     }
   } catch (error) {
-    let message
-    if (error instanceof Error) message = error.message
-    else message = String(error)
-    console.warn(message);
+    reportError(error);
     return false;
   }
 }
@@ -788,9 +780,7 @@ function readFile(filename: string) {
   if (filename.length === 0) {
     return "";
   }
-  //if (!encode && encode !== null) {
   const encode = "utf-8";
-  //}
   if (filename.indexOf("file://") === 0) {
     if (process.platform === "win32") {
       filename = filename.replace(/^file:\/\/\//, "").replace(/^file:\/\//, "");
@@ -986,11 +976,7 @@ function checkPuppeteerBinary() {
     // bundled Chromium
     const puppeteer = require("puppeteer-core");
     executablePath = puppeteer.executablePath();
-    if (isExistsPath(executablePath)) {
-      return true;
-    } else {
-      return false;
-    }
+    return isExistsPath(executablePath);
   } catch (error) {
     showErrorMessage("checkPuppeteerBinary()", error);
   }
@@ -1032,7 +1018,7 @@ function downloadChromium(
 
     if (checkPuppeteerBinary()) {
       INSTALL_CHECK = true;
-      statusbarmessage.dispose();
+      statusBarMessage.dispose();
       vscode.window.setStatusBarMessage(
         "$(symbol-unit) Chromium installation succeeded!",
         StatusbarMessageTimeout
@@ -1045,7 +1031,7 @@ function downloadChromium(
   }
 
   function onError(error: any) {
-    statusbarmessage.dispose();
+    statusBarMessage.dispose();
     vscode.window.setStatusBarMessage(
       "$(symbol-unit) ERROR: Failed to download Chromium!",
       StatusbarMessageTimeout
@@ -1069,7 +1055,7 @@ function downloadChromium(
     vscode.window.showInformationMessage(
       "[Gherkin PDF] Installing Chromium..."
     );
-    var statusbarmessage= vscode.window.setStatusBarMessage(
+    var statusBarMessage = vscode.window.setStatusBarMessage(
       "$(symbol-unit) Installing Chromium..."
     );
 
@@ -1108,7 +1094,7 @@ function setProxy() {
 }
 
 function setBooleanValue(a: boolean, b: any) {
-  if (a === false) {
+  if (!a) {
     return false;
   } else {
     return a || b;

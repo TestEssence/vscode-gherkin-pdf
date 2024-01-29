@@ -10,10 +10,8 @@ work/**
 .eslintrc.json
 dist
 out/*
-vvot34k27sgud7zlzytc3rub6ft5n4dbhkqh5rt7.txt
 temp/*
 
-.idea/inspectionProfiles/Project_Default.xml
-.idea/vscode-gherkin-pdf.iml
-.idea/vcs.xml
-.idea/modules.xml
+.idea/*
+/token.secret
+*.pdf
