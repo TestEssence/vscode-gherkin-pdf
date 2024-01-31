@@ -14,3 +14,5 @@ src/**
 out/test/**
 *.txt
 temp/**
+.idea/**
+*.secret

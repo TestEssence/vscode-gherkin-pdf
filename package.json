@@ -2,7 +2,7 @@
   "name": "gherkin-pdf",
   "displayName": "Gherkin PDF",
   "description": "Converts Gherkin (.feature) files into markdown, html, and PDF format",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "TestEssence",
   "icon": "images/icon.png",
   "engines": {
