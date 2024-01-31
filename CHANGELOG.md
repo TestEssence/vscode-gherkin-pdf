@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.2 (2024/1/31)
+
+- Fixed issue [#40](https://github.com/TestEssence/vscode-gherkin-pdf/issues/40): Remove badge reference from readme
+
 ## 0.2.1 (2024/1/30)
 
 - Fixed issue [#36](https://github.com/TestEssence/vscode-gherkin-pdf/issues/36): Migrate extension to feature-to-md package
